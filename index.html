@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WiFi Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="login-section">
+            <img src="logo.png" alt="Logo" class="logo">
+            <h1 class="judul">WiFi Login</h1>
+            <form action="login.php" method="POST">
+                <div class="tab">
+                    <button class="tablinks" onclick="openLogin(event, 'Voucher')">Voucher</button>
+                    <button class="tablinks" onclick="openLogin(event, 'Member')">Member</button>
+                </div>
+                
+                <!-- Form Voucher -->
+                <div id="Voucher" class="tabcontent">
+                    <form action="login.php" method="POST">
+                        <input type="text" name="voucher_code" placeholder="Masukkan kode voucher" required>
+                        <button type="submit">Login dengan Voucher</button>
+                    </form>
+                </div>
+                
+                <!-- Form Member -->
+                <div id="Member" class="tabcontent" style="display:none;">
+                    <form action="login.php" method="POST">
+                        <input type="text" name="username" placeholder="Masukkan username" required>
+                        <input type="password" name="password" placeholder="Masukkan password" required>
+                        <button type="submit">Login sebagai Member</button>
+                    </form>
+                </div>
+
+                <script>
+                    function openLogin(evt, loginType) {
+                        // Hide all tabcontent by default
+                        var tabcontent = document.getElementsByClassName("tabcontent");
+                        for (var i = 0; i < tabcontent.length; i++) {
+                            tabcontent[i].style.display = "none";
+                        }
+                
+                        // Remove the "active" class from all tablinks
+                        var tablinks = document.getElementsByClassName("tablinks");
+                        for (var i = 0; i < tablinks.length; i++) {
+                            tablinks[i].className = tablinks[i].className.replace(" active", "");
+                        }
+                
+                        // Show the selected tab content and add "active" class to the clicked tab
+                        document.getElementById(loginType).style.display = "block";
+                        evt.currentTarget.className += " active";
+                    }
+                </script>
+            
+        </div>
+        <div class="pricing">
+            <h2>Paket WiFi:</h2>
+            <ul>
+                <li><span>Rp 2,000</span> - 5 Jam</li>
+                <li><span>Rp 3,000</span> - 8 Jam</li>
+                <li><span>Rp 5,000</span> - 12 Jam</li>
+                <li><span>Rp 50,000</span> - 1 Bulan</li>
+            </ul>
+        </div>
+        <div class="jadwal-sholat">
+            <h2>Jadwal Sholat - Panumbangan</h2>
+            <table id="jadwal-table">
+                <thead>
+                    <tr>
+                        <th>Waktu</th>
+                        <th>Jam</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data jadwal sholat akan diisi di sini -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer>
+        <p>Developed by <a href="https://github.com/bimaadam" target="_blank" rel="noopener noreferrer">Bima Adam</a></p>
+    </footer>
+
+    <script>
+        // URL API Aladhan untuk jadwal sholat
+        const apiUrl = 'https://api.aladhan.com/v1/timingsByCity?city=Ciamis&country=ID&method=8';
+
+        async function fetchAndDisplayJadwalSholat() {
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                const timings = data.data.timings;
+
+                if (timings) {
+                    const jadwalTable = document.getElementById('jadwal-table').getElementsByTagName('tbody')[0];
+                    jadwalTable.innerHTML = `
+                        <tr>
+                            <td>Subuh</td>
+                            <td>${timings.Fajr}</td>
+                        </tr>
+                        <tr>
+                            <td>Dzuhur</td>
+                            <td>${timings.Dhuhr}</td>
+                        </tr>
+                        <tr>
+                            <td>Asar</td>
+                            <td>${timings.Asr}</td>
+                        </tr>
+                        <tr>
+                            <td>Maghrib</td>
+                            <td>${timings.Maghrib}</td>
+                        </tr>
+                        <tr>
+                            <td>Isya</td>
+                            <td>${timings.Isha}</td>
+                        </tr>
+                    `;
+                } else {
+                    console.error('Data tidak ditemukan');
+                }
+            } catch (error) {
+                console.error('Terjadi kesalahan:', error);
+            }
+        }
+
+        // Panggil fungsi untuk mendapatkan dan menampilkan jadwal sholat
+        fetchAndDisplayJadwalSholat();
+    </script>
+</body>
+</html>
